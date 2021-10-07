@@ -14,29 +14,14 @@
             <a href="#about">About</a>
             
         </div>
+        
         <div id="app">
-            <div class="product">
-                <div class="product-image">
-                    <img v-bind:src="image"style="width:100%">
-                </div>
-                <div class="product-info">
-                    <h5>{{product}}</h5>
-                    <p v-if="inventory > 10">Instock</p>
-                    <p v-else-if ="inventory <= 10 && inventory > 0 ">Almost Sold Out</p>
-                    <p v-else>Out of stock</p>
-                    <ul>
-                        <li v-for="detail in details">{{detail}}</li>
-                    </ul>
-                    <div v-for="variant in variants":key="variant.variantId" style="display:inline-block;">
-                      <p @mouseover="updateProduct(variant.variantImage)"
-                       style="padding: 5px 20px;cursor: pointer;border: 2px solid #000;margin-left: 7px;margin-bottom: 8px;">  {{variant.variantColor}} </p>
-                    </div>
-                </div>
-                <button v-on:click="addToCart">Add To Cart</button>
-                <div id="cart">  
-                    <p >Cart:{{cart}}</p>  
-                </div>
-                </div>
+            <div id="cart">
+                <p>Cart:{{cart.length}}</p>
+            </div>
+            
+            <product :premium="premium" @add-to-cart="updateCart"></product>
+            <product @add-to-cart="updateCart"></product>
             
         </div>
         <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>

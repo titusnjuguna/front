@@ -32,6 +32,20 @@ Vue.component('product',{
                     </div>
                 </div>
                 <button v-on:click="addToCart" :disabled="!inventory">Add To Cart</button>
+                <hr/>
+                <h2>Reviews</h2>
+                <p v-if="!reviews.length">There are no reviews</p>
+                <ul> <li v-for="review in reviews"> 
+                        <p>{{review.name}}</p>
+                        <p>{{review.rating}}</p>
+                        <p> {{review.Review}} </p>
+
+                    </li>
+                    
+                    
+                    
+                </ul>
+                <hr/>
                 <product_Review @review-submitted="addReview"></product_Review>
                 
                 </div>`,
@@ -61,7 +75,8 @@ Vue.component('product',{
                 variantColor:"Black",
                 variantQuantity: 0
             }
-            ]
+            ],
+            reviews : []
             }
      },
     methods:{
@@ -72,7 +87,7 @@ Vue.component('product',{
                     this.selectedVariant = index
                 },
                 addReview(product_review){
-                    th
+                    this.reviews.push(product_review)
                 }
             },
     computed:{
@@ -100,16 +115,25 @@ Vue.component('product',{
 Vue.component('product_Review',{
     template:
     `
-        <div>
+<div>
   <form action="/action_page.php" @submit.prevent="onSubmit">
+  <p v-if="errors.length">
+  <b> Please Check the following:</b>
+  <ul> 
+    <li v-for="error in errors">{{error}}</li>
+  </ul>
+  </p>
+
     <label for="fname">Customer Name</label>
     <input type="text" id="fname" name="name" placeholder="Your name.." v-model="name">
-
+    <p>
     <label for="lname">Review</label>
-    <textArea v-model="review"></textArea>
+    </p>
     
-
+    <textArea v-model="review"></textArea>
+   <p>
     <label for="rating">Rating</label>
+    </p>
     <select id="country" name="rating" v-model.number="rating">
       <option >1</option>
       <option >2</option>
@@ -117,8 +141,10 @@ Vue.component('product_Review',{
       <option >4</option>
       <option >5</option>
     </select>
-  
+   
+  <p>
     <input type="submit" value="Submit">
+  </p>  
   </form>
 </div>
 
@@ -128,21 +154,32 @@ Vue.component('product_Review',{
         return{
             name:null,
             review: null,
-            rating: null
+            rating: null,
+            errors : []
 
         }
+        
     },
     methods:{
         onSubmit(){
-            let product_review = {
+            if (this.name && this.review && this.rating){
+                let product_review = {
                 name: this.name,
                 review: this.review,
                 rating: this.rating
             }
             this.$emit('review-submitted',product_review)
             this.name = null
-            this.review  = null
-            this.rating  = null
+            this.review = null
+            this.rating = null
+
+            }else{
+                if(!this.name)this.errors.push('Name is Required')
+                if(!this.review)this.errors.push('Review is Required')
+                if(!this.rating)this.errors.push('Rating is Required')
+                
+            }
+            
              
         }
     }
